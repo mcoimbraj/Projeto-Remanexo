@@ -1,98 +1,72 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
-
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
-
-export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
-
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
-  );
-}
+import { View, Text, StyleSheet } from 'react-native';
+import { useTheme } from '@react-navigation/native';
+import GradientBackground from '@/components/ui/GradientBackground';
+import Card from '@/components/cards';
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
+    padding: 16,
   },
-  stepContainer: {
-    gap: 8,
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+  },
+  label: {
+    fontSize: 14,
+    opacity: 0.7,
     marginBottom: 8,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  value: {
+    fontSize: 20,
+    fontWeight: 'bold',
   },
 });
+
+export default function TelaFinanceira() {
+  const { colors } = useTheme();
+
+  return (
+    <GradientBackground>
+      <View style={styles.container}>
+        
+        {/* HEADER */}
+        <Text style={[styles.title, { color: colors.text }]}>
+          💰 Dashboard
+        </Text>
+
+        {/* SALDO */}
+        <Card>
+          <Text style={styles.label}>Saldo Total</Text>
+          <Text style={styles.value}>R$ 12.450,00</Text>
+        </Card>
+
+        {/* RECEITAS */}
+        <Card>
+          <Text style={styles.label}>Receitas</Text>
+          <Text style={[styles.value, { color: '#22c55e' }]}>
+            + R$ 5.200,00
+          </Text>
+        </Card>
+
+        {/* DESPESAS */}
+        <Card>
+          <Text style={styles.label}>Despesas</Text>
+          <Text style={[styles.value, { color: '#ef4444' }]}>
+            - R$ 2.100,00
+          </Text>
+        </Card>
+
+        {/* RESUMO */}
+        <Card>
+          <Text style={styles.label}>Resumo do mês</Text>
+          <Text style={{ color: colors.text }}>
+            Você economizou mais do que gastou 👍
+          </Text>
+        </Card>
+
+      </View>
+    </GradientBackground>
+  );
+}
