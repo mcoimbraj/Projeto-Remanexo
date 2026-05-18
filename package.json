@@ -6,11 +6,16 @@
   "dependencies": {
     "@react-navigation/native": "^7.2.4",
     "expo-linear-gradient": "^55.0.14",
-    "expo-router": "^55.0.14"
+    "expo-router": "^55.0.14",
+    "expo": "~55.0.24",
+    "react": "19.2.0",
+    "react-native": "0.83.6"
   },
   "devDependencies": {
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "typescript": "~5.9.2"
-  }
+  },
+  "version": "1.0.0",
+  "scripts": {}
 }
