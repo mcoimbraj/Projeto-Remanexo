@@ -1,0 +1,14 @@
+{
+  "name": "Projeto-Remanexo",
+  "lockfileVersion": 3,
+  "requires": true,
+  "packages": {},
+  "dependencies": {
+    "@react-navigation/native": "^7.2.4",
+    "expo-linear-gradient": "^55.0.14"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3"
+  }
+}
