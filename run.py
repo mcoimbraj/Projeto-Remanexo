@@ -19,7 +19,7 @@ Demo:
   Senha: 123456
 """
 
-from backend import app
+from remanexo_mobile.backend import app
 
 if __name__ == '__main__':
     app.run(debug=True, host='localhost', port=5000)
