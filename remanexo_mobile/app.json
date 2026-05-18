@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "remanexo-mobile",
-    "slug": "remanexo-mobile",
+    "name": "Troca moedas-mobile",
+    "slug": "Troca moedas-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "remanexomobile",
+    "scheme": "Troca moedasmobile",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {

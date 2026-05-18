@@ -1,7 +1,7 @@
 """
 ╔═══════════════════════════════════════════════════════════════╗
 ║                                                               ║
-║        🎯 REMANEXO - SISTEMA FINANCEIRO COM POO              ║
+║        🎯 Troca moedas - SISTEMA FINANCEIRO COM POO              ║
 ║                                                               ║
 ║  Desenvolvido com Flask e SQLite usando os 4 pilares da POO: ║
 ║  ✓ ABSTRAÇÃO (classe abstrata Transacao)                     ║
@@ -28,8 +28,8 @@ def create_app():
     app = Flask(__name__, template_folder='templates', static_folder='static')
 
     # ═ CONFIGURAÇÕES BÁSICAS ═
-    app.config['SECRET_KEY'] = 'remanexo-secret-key-2026'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///remanexo.db'
+    app.config['SECRET_KEY'] = 'Troca moedas-secret-key-2026'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///Troca moedas.db'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SESSION_TYPE'] = 'filesystem'
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)
@@ -69,12 +69,12 @@ def criar_usuario_demo():
     """cria usuário demo pra testes (se não existir)"""
     from .database import UsuarioModel, ContaModel, AssinaturaModel, NexoModel
 
-    usuario_demo = UsuarioModel.query.filter_by(email='demo@remanexo.com').first()
+    usuario_demo = UsuarioModel.query.filter_by(email='demo@Troca moedas.com').first()
 
     if not usuario_demo:
         usuario_demo = UsuarioModel(
             nome='Usuário Demo',
-            email='demo@remanexo.com'
+            email='demo@Troca moedas.com'
         )
         usuario_demo.definir_senha('123456')
 
@@ -194,12 +194,12 @@ if __name__ == '__main__':
 
     print("""
     ╔═══════════════════════════════════════════════════════════════╗
-    ║                   🚀 REMANEXO INICIANDO                       ║
+    ║                   🚀 Troca moedas INICIANDO                       ║
     ║                                                               ║
     ║  Acesse: http://localhost:5000                               ║
     ║                                                               ║
     ║  Demo:                                                        ║
-    ║  • Email: demo@remanexo.com                                   ║
+    ║  • Email: demo@Troca moedas.com                                   ║
     ║  • Senha: 123456                                              ║
     ║                                                               ║
     ║  Conceitos POO Demonstrados:                                  ║

@@ -1,4 +1,4 @@
-export const greenPalette = {
+export const Colors = {
   primary: '#22c55e',
   primaryDark: '#16a34a',
   primaryLight: '#4ade80',

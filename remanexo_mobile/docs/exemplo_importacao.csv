@@ -1,8 +1,0 @@
-descricao,valor,tipo,data,categoria,banco,status
-Saldo Inicial,5000.00,saldo_inicial,2026-01-01,saldo,itau,ativa
-Salário,5000.00,receita,2026-04-01,salário,itau,ativa
-Aluguel,-1200.00,despesa,2026-04-05,moradia,itau,ativa
-Supermercado,-350.50,despesa,2026-04-10,alimentação,itau,ativa
-Freelance,-800.00,receita,2026-04-15,freelance,nubank,ativa
-Energia,-150.00,despesa,2026-04-18,utilidades,itau,ativa
-Compra Cancelada,200.00,despesa,2026-04-22,brinquedos,itau,descartada

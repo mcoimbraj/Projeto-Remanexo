@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function TelaFinanceira() {
+export default function App() {
   const { colors } = useTheme();
 
   return (
