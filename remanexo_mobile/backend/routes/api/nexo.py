@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, session, redirect, url_for, request, jsonify
 from datetime import datetime
-from ..database import db, NexoModel, ReceitaModel, DespesaModel, ContaModel
+from ...database import db, NexoModel, ReceitaModel, DespesaModel, ContaModel
 
 bp = Blueprint('nexo', __name__, url_prefix='/nexo')
 

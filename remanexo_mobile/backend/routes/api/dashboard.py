@@ -1,7 +1,17 @@
 from flask import Blueprint, render_template, session, redirect, url_for, request
 from werkzeug.security import generate_password_hash
 from datetime import datetime, timedelta
-from ..database import db, UsuarioModel, ContaModel, ReceitaModel, DespesaModel, TransacaoModel, AssinaturaModel, NexoModel, NotificacaoModel
+from ...database import (
+    db,
+    UsuarioModel,
+    ContaModel,
+    ReceitaModel,
+    DespesaModel,
+    TransacaoModel,
+    AssinaturaModel,
+    NexoModel,
+    NotificacaoModel
+)
 
 bp = Blueprint('dashboard', __name__, url_prefix='/')
 

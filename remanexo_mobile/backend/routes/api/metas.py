@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, session, redirect, url_for, request
 from datetime import datetime
-from ..database import db, UsuarioModel, MetaModel
+from ...database import db, UsuarioModel, MetaModel
 
 bp = Blueprint('metas', __name__, url_prefix='/metas')
 

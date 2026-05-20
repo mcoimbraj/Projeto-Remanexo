@@ -19,7 +19,9 @@ Demo:
   Senha: 123456
 """
 
-from Remanexo_mobile.backend import app
+from remanexo_mobile.backend.app import create_app
 
-if __name__ == '__main__':
-    app.run(debug=True, host='localhost', port=5000)
+app = create_app()
+
+if __name__ == "__main__":
+    app.run(debug=True, host="localhost", port=5000)
