@@ -1,4 +1,4 @@
-package com.projetoTroca moedas
+package com.projetoRemanexo
 
 import android.os.Build
 import android.os.Bundle

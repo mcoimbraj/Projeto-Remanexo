@@ -1,4 +1,4 @@
-package com.projetoTroca moedas
+package com.projetoRemanexo
 
 import android.app.Application
 import android.content.res.Configuration

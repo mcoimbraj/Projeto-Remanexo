@@ -1,18 +1,18 @@
 @echo off
 REM ╔═══════════════════════════════════════════════════════════════╗
-REM ║           Troca moedas - INICIAR SERVIDOR                         ║
+REM ║           Remanexo - INICIAR SERVIDOR                         ║
 REM ║    Sistema Financeiro com POO em Flask e SQLite              ║
 REM ╚═══════════════════════════════════════════════════════════════╝
 
 cls
 echo.
 echo  ╔═══════════════════════════════════════════════════════════════╗
-echo  ║                   Troca moedas - INICIANDO                        ║
+echo  ║                   Remanexo - INICIANDO                        ║
 echo  ║                                                               ║
 echo  ║  Acesse: http://localhost:5000                               ║
 echo  ║                                                               ║
 echo  ║  Demo:                                                        ║
-echo  ║  • Email: demo@Troca moedas.com                                   ║
+echo  ║  • Email: demo@Remanexo.com                                   ║
 echo  ║  • Senha: 123456                                              ║
 echo  ║                                                               ║
 echo  ╚═══════════════════════════════════════════════════════════════╝

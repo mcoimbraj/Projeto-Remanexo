@@ -8,7 +8,7 @@ ENV/
 *.db
 *.sqlite
 *.sqlite3
-Troca moedas.db
+Remanexo.db
 
 # City
 flask_session/

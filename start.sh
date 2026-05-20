@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # ╔═══════════════════════════════════════════════════════════════╗
-# ║           Troca moedas - INICIAR SERVIDOR                         ║
+# ║           Remanexo - INICIAR SERVIDOR                         ║
 # ║    Sistema Financeiro com POO em Flask e SQLite              ║
 # ╚═══════════════════════════════════════════════════════════════╝
 
@@ -9,12 +9,12 @@ clear
 
 echo ""
 echo "  ╔═══════════════════════════════════════════════════════════════╗"
-echo "  ║                   Troca moedas - INICIANDO                        ║"
+echo "  ║                   Remanexo - INICIANDO                        ║"
 echo "  ║                                                               ║"
 echo "  ║  Acesse: http://localhost:5000                               ║"
 echo "  ║                                                               ║"
 echo "  ║  Demo:                                                        ║"
-echo "  ║  • Email: demo@Troca moedas.com                                   ║"
+echo "  ║  • Email: demo@Remanexo.com                                   ║"
 echo "  ║  • Senha: 123456                                              ║"
 echo "  ║                                                               ║"
 echo "  ╚═══════════════════════════════════════════════════════════════╝"
