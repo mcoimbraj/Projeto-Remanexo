@@ -1,209 +1,157 @@
-import { useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+//Realizar as funções de login, como autenticação e redirecionamento para a página principal após o login bem-sucedido. Deve se comunicar com o backend para verificar as credenciais do usuário e armazenar o token de autenticação para futuras requisições.
 
+import React, { useState } from 'react';
 import {
   View,
   Text,
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Alert,
   ActivityIndicator,
-} from "react-native";
+  KeyboardAvoidingView,
+  Platform,
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
 
-export default function Login({ navigation }) {
+const API_URL = 'http://10.0.2.2:5000'; // emulador Android
+// const API_URL = 'http://192.168.18.11:5000'; // celular físico
 
-  const [email, setEmail] = useState("");
-  const [senha, setSenha] = useState("");
-  const [loading, setLoading] = useState(false);
+export default function Login() {
+  const router = useRouter();
+  const [email, setEmail] = useState('');
+  const [senha, setSenha] = useState('');
+  const [erro, setErro] = useState(null);
+  const [carregando, setCarregando] = useState(false);
 
-  async function handleLogin() {
-
+  const fazerLogin = async () => {
     if (!email || !senha) {
-      Alert.alert("Erro", "Preencha todos os campos");
+      setErro('Preencha email e senha.');
       return;
     }
 
-    try {
-      setLoading(true);
+    setCarregando(true);
+    setErro(null);
 
-      const response = await fetch("http://10.0.2.2:5000/api/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          senha,
-        }),
+    try {
+      const resposta = await fetch(`${API_URL}/api/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, senha }),
       });
 
-      const data = await response.json();
+      const json = await resposta.json();
 
-      setLoading(false);
-
-      if (!response.ok) {
-        Alert.alert("Erro", data.erro || "Erro ao fazer login");
+      if (!resposta.ok) {
+        setErro(json.erro ?? 'Erro ao fazer login.');
         return;
       }
 
-      // 🔐 SALVANDO SESSÃO (ASYNC STORAGE)
-      await AsyncStorage.setItem(
-        "user",
-        JSON.stringify(data.usuario)
-      );
+      // salva usuário no AsyncStorage
+      await AsyncStorage.setItem('usuario', JSON.stringify(json.usuario));
 
-      Alert.alert(
-        "Sucesso",
-        `Bem-vindo ${data.usuario.nome}`
-      );
-
-      // 🚀 REDIRECIONA PARA HOME
-      navigation.replace("Home");
-
-    } catch (error) {
-      setLoading(false);
-
-      console.log(error);
-
-      Alert.alert(
-        "Erro",
-        "Não foi possível conectar ao servidor"
-      );
+      // navega para as abas
+      router.replace('/(abas)/home');
+    } catch (e) {
+      setErro('Não foi possível conectar ao servidor.');
+    } finally {
+      setCarregando(false);
     }
-  }
+  };
 
   return (
-    <View style={styles.container}>
-
-      <View style={styles.card}>
-
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <View style={styles.caixa}>
         <Text style={styles.titulo}>Remanexo</Text>
+        <Text style={styles.subtitulo}>Faça login para continuar</Text>
 
-        <Text style={styles.subtitulo}>
-          Sistema Financeiro com Open Finance Simulado
-        </Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          placeholderTextColor="#aaa"
+          keyboardType="email-address"
+          autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
+        />
 
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>E-mail</Text>
+        <TextInput
+          style={styles.input}
+          placeholder="Senha"
+          placeholderTextColor="#aaa"
+          secureTextEntry
+          value={senha}
+          onChangeText={setSenha}
+        />
 
-          <TextInput
-            style={styles.input}
-            placeholder="seu@email.com"
-            keyboardType="email-address"
-            autoCapitalize="none"
-            value={email}
-            onChangeText={setEmail}
-          />
-        </View>
-
-        <View style={styles.formGroup}>
-          <Text style={styles.label}>Senha</Text>
-
-          <TextInput
-            style={styles.input}
-            placeholder="••••••••"
-            secureTextEntry
-            value={senha}
-            onChangeText={setSenha}
-          />
-        </View>
+        {erro && <Text style={styles.erro}>{erro}</Text>}
 
         <TouchableOpacity
-          style={styles.botao}
-          onPress={handleLogin}
-          disabled={loading}
+          style={[styles.botao, carregando && styles.botaoDesabilitado]}
+          onPress={fazerLogin}
+          disabled={carregando}
         >
-          {loading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.botaoTexto}>Entrar</Text>
-          )}
+          {carregando
+            ? <ActivityIndicator color="#fff" />
+            : <Text style={styles.botaoTexto}>Entrar</Text>
+          }
         </TouchableOpacity>
-
-        <View style={styles.divisor} />
-
-        <Text style={styles.cadastroTexto}>
-          Sem conta? <Text style={styles.link}>Criar nova conta</Text>
-        </Text>
-
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = StyleSheet.create({
-
   container: {
     flex: 1,
-    backgroundColor: "#f4f4f4",
-    justifyContent: "center",
-    padding: 20,
-  },
-
-  card: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
+    backgroundColor: '#6200ee',
+    justifyContent: 'center',
     padding: 24,
-    elevation: 3,
   },
-
+  caixa: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 28,
+    elevation: 6,
+  },
   titulo: {
     fontSize: 28,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 8,
+    fontWeight: 'bold',
+    color: '#6200ee',
+    textAlign: 'center',
   },
-
   subtitulo: {
-    textAlign: "center",
-    color: "#666",
-    marginBottom: 28,
+    fontSize: 14,
+    color: '#888',
+    textAlign: 'center',
+    marginBottom: 24,
+    marginTop: 4,
   },
-
-  formGroup: {
-    marginBottom: 18,
-  },
-
-  label: {
-    marginBottom: 6,
-    fontWeight: "600",
-  },
-
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 8,
-    padding: 12,
-  },
-
-  botao: {
-    backgroundColor: "#0d6efd",
+    borderColor: '#ddd',
+    borderRadius: 10,
     padding: 14,
-    borderRadius: 8,
-    alignItems: "center",
-    marginTop: 10,
+    marginBottom: 14,
+    fontSize: 15,
+    color: '#333',
   },
-
-  botaoTexto: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: 16,
+  erro: {
+    color: '#e53935',
+    fontSize: 13,
+    marginBottom: 10,
+    textAlign: 'center',
   },
-
-  divisor: {
-    height: 1,
-    backgroundColor: "#ddd",
-    marginVertical: 24,
+  botao: {
+    backgroundColor: '#6200ee',
+    borderRadius: 10,
+    padding: 16,
+    alignItems: 'center',
+    marginTop: 4,
   },
-
-  cadastroTexto: {
-    textAlign: "center",
-    color: "#666",
-  },
-
-  link: {
-    color: "#0d6efd",
-    fontWeight: "bold",
-  },
+  botaoDesabilitado: { opacity: 0.6 },
+  botaoTexto: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
 });

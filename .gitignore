@@ -1,59 +1,41 @@
-# Ambiente Virtual
-venv/
-env/
-ENV/
-.venv
+# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
 
-# Banco de Dados
-*.db
-*.sqlite
-*.sqlite3
-Remanexo.db
+# dependencies
+node_modules/
 
-# City
-flask_session/
-instance/
-
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
+# Expo
+.expo/
 dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
+web-build/
+expo-env.d.ts
 
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
+# Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# debug
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
 .DS_Store
+*.pem
 
-# Logs
-*.log
-logs/
+# local env files
+.env*.local
 
-# Ambiente
-.env
-.env.local
+# typescript
+*.tsbuildinfo
 
-# Cache
-.pytest_cache/
-.coverage
-htmlcov/
-node_modules
+# generated native folders
+/ios
+/android
