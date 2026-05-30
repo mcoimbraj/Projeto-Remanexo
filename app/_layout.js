@@ -16,12 +16,12 @@ export default function Layout() {
     checkUser();
   }, []);
 
-  async function checkUser() {
-    const data = await AsyncStorage.getItem("user");
+async function checkUser() {
+  console.log("checkUser executou");
 
-    setUser(data ? JSON.parse(data) : null);
-    setLoading(false);
-  }
+  setUser(null);
+  setLoading(false);
+}
 
   // 🔁 redirecionamento automático
   useEffect(() => {
