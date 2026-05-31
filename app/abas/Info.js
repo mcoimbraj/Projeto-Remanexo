@@ -1,6 +1,6 @@
 // app/(abas)/Info.js
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback } from "react";
 import {
   View,
   Text,
@@ -12,11 +12,11 @@ import {
   RefreshControl,
   Alert,
   Modal,
-} from 'react-native';
-import { apiFetch } from'../api';
+} from "react-native";
+import { apiFetch } from "../api";
 
 export default function Info() {
-  const [abaSelecionada, setAbaSelecionada] = useState('transacoes'); // 'transacoes' ou 'metas'
+  const [abaSelecionada, setAbaSelecionada] = useState("transacoes"); // 'transacoes' ou 'metas'
 
   const [transacoes, setTransacoes] = useState([]);
   const [metas, setMetas] = useState([]);
@@ -30,24 +30,24 @@ export default function Info() {
   const [modalMeta, setModalMeta] = useState(false);
 
   // campos do formulário de transação
-  const [txDescricao, setTxDescricao] = useState('');
-  const [txValor, setTxValor] = useState('');
-  const [txTipo, setTxTipo] = useState('despesa'); // 'receita' ou 'despesa'
+  const [txDescricao, setTxDescricao] = useState("");
+  const [txValor, setTxValor] = useState("");
+  const [txTipo, setTxTipo] = useState("despesa"); // 'receita' ou 'despesa'
 
   // campos do formulário de meta
-  const [metaDescricao, setMetaDescricao] = useState('');
-  const [metaValor, setMetaValor] = useState('');
+  const [metaDescricao, setMetaDescricao] = useState("");
+  const [metaValor, setMetaValor] = useState("");
 
   // ═══════════════════════════════════════════════════
   // BUSCAR DADOS
   // ═══════════════════════════════════════════════════
 
- const buscarDados = useCallback(async () => {
+  const buscarDados = useCallback(async () => {
     try {
       setErro(null);
       const [resTransacoes, resMetas] = await Promise.all([
-        apiFetch('/api/transacoes'),
-        apiFetch('/api/metas'),
+        apiFetch("/api/transacoes"),
+        apiFetch("/api/metas"),
       ]);
       setTransacoes(resTransacoes.transacoes ?? []);
       setMetas(resMetas.metas ?? []);
@@ -58,33 +58,40 @@ export default function Info() {
       setAtualizando(false);
     }
   }, []);
+  useEffect(() => {
+    buscarDados();
+  }, [buscarDados]);
 
+  const aoAtualizar = () => {
+    setAtualizando(true);
+    buscarDados();
+  };
   // ═══════════════════════════════════════════════════
   // ADICIONAR TRANSAÇÃO
   // ═══════════════════════════════════════════════════
 
   const adicionarTransacao = async () => {
     if (!txDescricao || !txValor) {
-      Alert.alert('Atenção', 'Preencha descrição e valor.');
+      Alert.alert("Atenção", "Preencha descrição e valor.");
       return;
     }
 
     try {
       await apiFetch(`/api/transacoes/${txTipo}`, {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({
           descricao: txDescricao,
           valor: parseFloat(txValor),
         }),
       });
 
-      setTxDescricao('');
-      setTxValor('');
-      setTxTipo('despesa');
+      setTxDescricao("");
+      setTxValor("");
+      setTxTipo("despesa");
       setModalTransacao(false);
       buscarDados();
     } catch (e) {
-      Alert.alert('Erro', e.message);
+      Alert.alert("Erro", e.message);
     }
   };
 
@@ -93,25 +100,23 @@ export default function Info() {
   // ═══════════════════════════════════════════════════
 
   const deletarTransacao = (id) => {
-    Alert.alert(
-      'Confirmar',
-      'Deseja mover essa transação para a lixeira?',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Descartar',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await apiFetch(`/api/transacoes/${id}/descartar`, { method: 'POST' });
-              buscarDados();
-            } catch (e) {
-              Alert.alert('Erro', e.message);
-            }
-          },
+    Alert.alert("Confirmar", "Deseja mover essa transação para a lixeira?", [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Descartar",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await apiFetch(`/api/transacoes/${id}/descartar`, {
+              method: "POST",
+            });
+            buscarDados();
+          } catch (e) {
+            Alert.alert("Erro", e.message);
+          }
         },
-      ]
-    );
+      },
+    ]);
   };
 
   // ═══════════════════════════════════════════════════
@@ -120,25 +125,25 @@ export default function Info() {
 
   const adicionarMeta = async () => {
     if (!metaDescricao || !metaValor) {
-      Alert.alert('Atenção', 'Preencha descrição e valor alvo.');
+      Alert.alert("Atenção", "Preencha descrição e valor alvo.");
       return;
     }
 
     try {
-      await apiFetch('/api/metas', {
-        method: 'POST',
+      await apiFetch("/api/metas", {
+        method: "POST",
         body: JSON.stringify({
           descricao: metaDescricao,
           valor_alvo: parseFloat(metaValor),
         }),
       });
 
-      setMetaDescricao('');
-      setMetaValor('');
+      setMetaDescricao("");
+      setMetaValor("");
       setModalMeta(false);
       buscarDados();
     } catch (e) {
-      Alert.alert('Erro', e.message);
+      Alert.alert("Erro", e.message);
     }
   };
 
@@ -147,25 +152,21 @@ export default function Info() {
   // ═══════════════════════════════════════════════════
 
   const deletarMeta = (id) => {
-    Alert.alert(
-      'Confirmar',
-      'Deseja deletar essa meta?',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Deletar',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              await apiFetch(`/api/metas/${id}/deletar`, { method: 'POST' });
-              buscarDados();
-            } catch (e) {
-              Alert.alert('Erro', e.message);
-            }
-          },
+    Alert.alert("Confirmar", "Deseja deletar essa meta?", [
+      { text: "Cancelar", style: "cancel" },
+      {
+        text: "Deletar",
+        style: "destructive",
+        onPress: async () => {
+          try {
+            await apiFetch(`/api/metas/${id}/deletar`, { method: "POST" });
+            buscarDados();
+          } catch (e) {
+            Alert.alert("Erro", e.message);
+          }
         },
-      ]
-    );
+      },
+    ]);
   };
 
   // ═══════════════════════════════════════════════════
@@ -193,22 +194,37 @@ export default function Info() {
 
   return (
     <View style={styles.container}>
-
       {/* Seletor de aba */}
       <View style={styles.seletor}>
         <TouchableOpacity
-          style={[styles.aba, abaSelecionada === 'transacoes' && styles.abaSelecionada]}
-          onPress={() => setAbaSelecionada('transacoes')}
+          style={[
+            styles.aba,
+            abaSelecionada === "transacoes" && styles.abaSelecionada,
+          ]}
+          onPress={() => setAbaSelecionada("transacoes")}
         >
-          <Text style={[styles.abaTexto, abaSelecionada === 'transacoes' && styles.abaTextoSelecionado]}>
+          <Text
+            style={[
+              styles.abaTexto,
+              abaSelecionada === "transacoes" && styles.abaTextoSelecionado,
+            ]}
+          >
             Transações
           </Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.aba, abaSelecionada === 'metas' && styles.abaSelecionada]}
-          onPress={() => setAbaSelecionada('metas')}
+          style={[
+            styles.aba,
+            abaSelecionada === "metas" && styles.abaSelecionada,
+          ]}
+          onPress={() => setAbaSelecionada("metas")}
         >
-          <Text style={[styles.abaTexto, abaSelecionada === 'metas' && styles.abaTextoSelecionado]}>
+          <Text
+            style={[
+              styles.abaTexto,
+              abaSelecionada === "metas" && styles.abaTextoSelecionado,
+            ]}
+          >
             Metas
           </Text>
         </TouchableOpacity>
@@ -217,11 +233,15 @@ export default function Info() {
       {/* Lista */}
       <ScrollView
         refreshControl={
-          <RefreshControl refreshing={atualizando} onRefresh={aoAtualizar} tintColor="#6200ee" />
+          <RefreshControl
+            refreshing={atualizando}
+            onRefresh={aoAtualizar}
+            tintColor="#6200ee"
+          />
         }
       >
         {/* ── TRANSAÇÕES ── */}
-        {abaSelecionada === 'transacoes' && (
+        {abaSelecionada === "transacoes" && (
           <View style={styles.lista}>
             {transacoes.length === 0 && (
               <Text style={styles.vazio}>Nenhuma transação ainda.</Text>
@@ -230,14 +250,19 @@ export default function Info() {
               <View key={t.id} style={styles.cartao}>
                 <View style={styles.cartaoEsquerda}>
                   <Text style={styles.cartaoDescricao}>{t.descricao}</Text>
-                  <Text style={styles.cartaoCategoria}>{t.categoria} · {t.data}</Text>
+                  <Text style={styles.cartaoCategoria}>
+                    {t.categoria} · {t.data}
+                  </Text>
                 </View>
                 <View style={styles.cartaoDireita}>
-                  <Text style={[
-                    styles.cartaoValor,
-                    t.tipo === 'receita' ? styles.receita : styles.despesa,
-                  ]}>
-                    {t.tipo === 'receita' ? '+' : '-'} R$ {Number(t.valor).toFixed(2)}
+                  <Text
+                    style={[
+                      styles.cartaoValor,
+                      t.tipo === "receita" ? styles.receita : styles.despesa,
+                    ]}
+                  >
+                    {t.tipo === "receita" ? "+" : "-"} R${" "}
+                    {Number(t.valor).toFixed(2)}
                   </Text>
                   <TouchableOpacity onPress={() => deletarTransacao(t.id)}>
                     <Text style={styles.botaoDeletar}>🗑</Text>
@@ -249,7 +274,7 @@ export default function Info() {
         )}
 
         {/* ── METAS ── */}
-        {abaSelecionada === 'metas' && (
+        {abaSelecionada === "metas" && (
           <View style={styles.lista}>
             {metas.length === 0 && (
               <Text style={styles.vazio}>Nenhuma meta ainda.</Text>
@@ -264,11 +289,17 @@ export default function Info() {
                     </TouchableOpacity>
                   </View>
                   <Text style={styles.cartaoCategoria}>
-                    R$ {Number(m.valor_acumulado).toFixed(2)} de R$ {Number(m.valor_alvo).toFixed(2)}
+                    R$ {Number(m.valor_acumulado).toFixed(2)} de R${" "}
+                    {Number(m.valor_alvo).toFixed(2)}
                   </Text>
                   {/* Barra de progresso */}
                   <View style={styles.barraFundo}>
-                    <View style={[styles.barraProgresso, { width: `${Math.min(m.progresso, 100)}%` }]} />
+                    <View
+                      style={[
+                        styles.barraProgresso,
+                        { width: `${Math.min(m.progresso, 100)}%` },
+                      ]}
+                    />
                   </View>
                   <Text style={styles.progressoTexto}>{m.progresso}%</Text>
                 </View>
@@ -281,7 +312,11 @@ export default function Info() {
       {/* Botão flutuante de adicionar */}
       <TouchableOpacity
         style={styles.fab}
-        onPress={() => abaSelecionada === 'transacoes' ? setModalTransacao(true) : setModalMeta(true)}
+        onPress={() =>
+          abaSelecionada === "transacoes"
+            ? setModalTransacao(true)
+            : setModalMeta(true)
+        }
       >
         <Text style={styles.fabTexto}>+</Text>
       </TouchableOpacity>
@@ -295,14 +330,20 @@ export default function Info() {
             {/* Tipo */}
             <View style={styles.seletorTipo}>
               <TouchableOpacity
-                style={[styles.tipoBotao, txTipo === 'despesa' && styles.tipoBotaoSelecionado]}
-                onPress={() => setTxTipo('despesa')}
+                style={[
+                  styles.tipoBotao,
+                  txTipo === "despesa" && styles.tipoBotaoSelecionado,
+                ]}
+                onPress={() => setTxTipo("despesa")}
               >
                 <Text style={styles.tipoBotaoTexto}>📉 Despesa</Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.tipoBotao, txTipo === 'receita' && styles.tipoBotaoSelecionado]}
-                onPress={() => setTxTipo('receita')}
+                style={[
+                  styles.tipoBotao,
+                  txTipo === "receita" && styles.tipoBotaoSelecionado,
+                ]}
+                onPress={() => setTxTipo("receita")}
               >
                 <Text style={styles.tipoBotaoTexto}>📈 Receita</Text>
               </TouchableOpacity>
@@ -323,10 +364,16 @@ export default function Info() {
             />
 
             <View style={styles.modalBotoes}>
-              <TouchableOpacity style={styles.botaoCancelar} onPress={() => setModalTransacao(false)}>
+              <TouchableOpacity
+                style={styles.botaoCancelar}
+                onPress={() => setModalTransacao(false)}
+              >
                 <Text style={styles.botaoCancelarTexto}>Cancelar</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.botaoConfirmar} onPress={adicionarTransacao}>
+              <TouchableOpacity
+                style={styles.botaoConfirmar}
+                onPress={adicionarTransacao}
+              >
                 <Text style={styles.botaoConfirmarTexto}>Adicionar</Text>
               </TouchableOpacity>
             </View>
@@ -355,96 +402,151 @@ export default function Info() {
             />
 
             <View style={styles.modalBotoes}>
-              <TouchableOpacity style={styles.botaoCancelar} onPress={() => setModalMeta(false)}>
+              <TouchableOpacity
+                style={styles.botaoCancelar}
+                onPress={() => setModalMeta(false)}
+              >
                 <Text style={styles.botaoCancelarTexto}>Cancelar</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.botaoConfirmar} onPress={adicionarMeta}>
+              <TouchableOpacity
+                style={styles.botaoConfirmar}
+                onPress={adicionarMeta}
+              >
                 <Text style={styles.botaoConfirmarTexto}>Adicionar</Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </Modal>
-
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f5f5f5' },
-  centro: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: 16 },
-  erroTexto: { color: '#c62828', fontSize: 15, textAlign: 'center', paddingHorizontal: 32 },
-  botaoTentar: { backgroundColor: '#6200ee', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 8 },
-  botaoTentarTexto: { color: '#fff', fontWeight: 'bold' },
+  container: { flex: 1, backgroundColor: "#f5f5f5" },
+  centro: { flex: 1, justifyContent: "center", alignItems: "center", gap: 16 },
+  erroTexto: {
+    color: "#c62828",
+    fontSize: 15,
+    textAlign: "center",
+    paddingHorizontal: 32,
+  },
+  botaoTentar: {
+    backgroundColor: "#6200ee",
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  botaoTentarTexto: { color: "#fff", fontWeight: "bold" },
 
-  seletor: { flexDirection: 'row', backgroundColor: '#fff', elevation: 2 },
-  aba: { flex: 1, paddingVertical: 14, alignItems: 'center' },
-  abaSelecionada: { borderBottomWidth: 2, borderBottomColor: '#6200ee' },
-  abaTexto: { fontSize: 15, color: '#888' },
-  abaTextoSelecionado: { color: '#6200ee', fontWeight: 'bold' },
+  seletor: { flexDirection: "row", backgroundColor: "#fff", elevation: 2 },
+  aba: { flex: 1, paddingVertical: 14, alignItems: "center" },
+  abaSelecionada: { borderBottomWidth: 2, borderBottomColor: "#6200ee" },
+  abaTexto: { fontSize: 15, color: "#888" },
+  abaTextoSelecionado: { color: "#6200ee", fontWeight: "bold" },
 
   lista: { padding: 16, gap: 12 },
-  vazio: { textAlign: 'center', color: '#aaa', marginTop: 40, fontSize: 15 },
+  vazio: { textAlign: "center", color: "#aaa", marginTop: 40, fontSize: 15 },
 
   cartao: {
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     borderRadius: 12,
     padding: 16,
     elevation: 2,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   cartaoConteudo: { flex: 1 },
-  cartaoTopo: { flexDirection: 'row', justifyContent: 'space-between' },
+  cartaoTopo: { flexDirection: "row", justifyContent: "space-between" },
   cartaoEsquerda: { flex: 1 },
-  cartaoDireita: { alignItems: 'flex-end', gap: 8 },
-  cartaoDescricao: { fontSize: 15, fontWeight: 'bold', color: '#333' },
-  cartaoCategoria: { fontSize: 12, color: '#aaa', marginTop: 4 },
-  cartaoValor: { fontSize: 16, fontWeight: 'bold' },
-  receita: { color: '#2e7d32' },
-  despesa: { color: '#c62828' },
+  cartaoDireita: { alignItems: "flex-end", gap: 8 },
+  cartaoDescricao: { fontSize: 15, fontWeight: "bold", color: "#333" },
+  cartaoCategoria: { fontSize: 12, color: "#aaa", marginTop: 4 },
+  cartaoValor: { fontSize: 16, fontWeight: "bold" },
+  receita: { color: "#2e7d32" },
+  despesa: { color: "#c62828" },
   botaoDeletar: { fontSize: 18 },
 
-  barraFundo: { height: 6, backgroundColor: '#eee', borderRadius: 4, marginTop: 8 },
-  barraProgresso: { height: 6, backgroundColor: '#6200ee', borderRadius: 4 },
-  progressoTexto: { fontSize: 11, color: '#888', marginTop: 4 },
+  barraFundo: {
+    height: 6,
+    backgroundColor: "#eee",
+    borderRadius: 4,
+    marginTop: 8,
+  },
+  barraProgresso: { height: 6, backgroundColor: "#6200ee", borderRadius: 4 },
+  progressoTexto: { fontSize: 11, color: "#888", marginTop: 4 },
 
   fab: {
-    position: 'absolute',
+    position: "absolute",
     right: 20,
     bottom: 24,
-    backgroundColor: '#6200ee',
+    backgroundColor: "#6200ee",
     width: 56,
     height: 56,
     borderRadius: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     elevation: 6,
   },
-  fabTexto: { color: '#fff', fontSize: 28, lineHeight: 32 },
+  fabTexto: { color: "#fff", fontSize: 28, lineHeight: 32 },
 
-  modalFundo: { flex: 1, backgroundColor: '#00000066', justifyContent: 'flex-end' },
-  modalCaixa: { backgroundColor: '#fff', borderTopLeftRadius: 20, borderTopRightRadius: 20, padding: 24, gap: 12 },
-  modalTitulo: { fontSize: 18, fontWeight: 'bold', color: '#333', marginBottom: 4 },
+  modalFundo: {
+    flex: 1,
+    backgroundColor: "#00000066",
+    justifyContent: "flex-end",
+  },
+  modalCaixa: {
+    backgroundColor: "#fff",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 24,
+    gap: 12,
+  },
+  modalTitulo: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#333",
+    marginBottom: 4,
+  },
 
-  seletorTipo: { flexDirection: 'row', gap: 10 },
-  tipoBotao: { flex: 1, padding: 10, borderRadius: 8, borderWidth: 1, borderColor: '#ddd', alignItems: 'center' },
-  tipoBotaoSelecionado: { borderColor: '#6200ee', backgroundColor: '#f3e5ff' },
+  seletorTipo: { flexDirection: "row", gap: 10 },
+  tipoBotao: {
+    flex: 1,
+    padding: 10,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    alignItems: "center",
+  },
+  tipoBotaoSelecionado: { borderColor: "#6200ee", backgroundColor: "#f3e5ff" },
   tipoBotaoTexto: { fontSize: 14 },
 
   input: {
     borderWidth: 1,
-    borderColor: '#ddd',
+    borderColor: "#ddd",
     borderRadius: 10,
     padding: 14,
     fontSize: 15,
-    color: '#333',
+    color: "#333",
   },
 
-  modalBotoes: { flexDirection: 'row', gap: 10, marginTop: 4 },
-  botaoCancelar: { flex: 1, padding: 14, borderRadius: 10, borderWidth: 1, borderColor: '#ddd', alignItems: 'center' },
-  botaoCancelarTexto: { color: '#888', fontWeight: 'bold' },
-  botaoConfirmar: { flex: 1, padding: 14, borderRadius: 10, backgroundColor: '#6200ee', alignItems: 'center' },
-  botaoConfirmarTexto: { color: '#fff', fontWeight: 'bold' },
+  modalBotoes: { flexDirection: "row", gap: 10, marginTop: 4 },
+  botaoCancelar: {
+    flex: 1,
+    padding: 14,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    alignItems: "center",
+  },
+  botaoCancelarTexto: { color: "#888", fontWeight: "bold" },
+  botaoConfirmar: {
+    flex: 1,
+    padding: 14,
+    borderRadius: 10,
+    backgroundColor: "#6200ee",
+    alignItems: "center",
+  },
+  botaoConfirmarTexto: { color: "#fff", fontWeight: "bold" },
 });
