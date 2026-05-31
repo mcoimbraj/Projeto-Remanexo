@@ -3,7 +3,7 @@
 from .api.auth import bp as auth_bp
 from .api.dashboard import bp as dashboard_bp
 from .api.transacoes import bp as transacoes_bp, bp_api as transacoes_api_bp
-from .api.metas import bp as metas_bp
+from .api.metas import bp as metas_bp, bp_api as metas_api_bp
 from .api.nexo import bp as nexo_bp
 from .api.categorias import bp as categorias_bp
 from .api.parcelamentos import bp as parcelamentos_bp, bp_api as parcelamentos_api_bp
