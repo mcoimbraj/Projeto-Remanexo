@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-import { apiFetch } from '../../App/api';
+import { apiFetch } from'../api';
 
 export default function Home() {
   const router = useRouter();

@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const API_URL = 'http://10.0.2.2:5000'; // emulador
-// export const API_URL = 'http://192.168.18.11:5000'; // celular físico
+//export const API_URL = 'http://10.0.2.2:5000'; // emulador
+ export const API_URL = 'http://192.168.18.11:5000'; // celular físico
 
 export async function apiFetch(rota, opcoes = {}) {
   const usuarioStr = await AsyncStorage.getItem('usuario');

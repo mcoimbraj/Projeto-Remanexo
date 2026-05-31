@@ -7,7 +7,7 @@ export default function Index() {
 
   useEffect(() => {
     AsyncStorage.getItem('usuario').then((valor) => {
-      setDestino(valor ? '/(abas)/home' : '/verificacao/login');
+      setDestino(valor ? '/abas/home' : '/verificacao/login');
     });
   }, []);
 

@@ -1,15 +1,20 @@
+# backend/routes/api/categorias.py
+
 from flask import Blueprint, render_template, session, redirect, url_for, request, jsonify, flash
 from ...database import db, CategoriaModel, PalavraChaveModel
 
+# ─────────────────────────────────────────────────────────
+# blueprint WEB — prefixo /categorias
+# ─────────────────────────────────────────────────────────
 bp = Blueprint('categorias', __name__, url_prefix='/categorias')
 
+
 # ═══════════════════════════════════════════════════════
-# LISTAR CATEGORIAS
+# ROTAS WEB
 # ═══════════════════════════════════════════════════════
 
 @bp.route('/', methods=['GET'])
 def listar_categorias():
-    """lista todas as categorias com suas palavras-chave (rf06)"""
     if 'usuario_id' not in session:
         return redirect(url_for('dashboard.login'))
 
@@ -17,13 +22,8 @@ def listar_categorias():
     return render_template('categorias.html', categorias=categorias)
 
 
-# ═══════════════════════════════════════════════════════
-# CRIAR CATEGORIA
-# ═══════════════════════════════════════════════════════
-
 @bp.route('/', methods=['POST'])
 def criar_categoria():
-    """cria uma nova categoria (rf06)"""
     if 'usuario_id' not in session:
         return redirect(url_for('dashboard.login'))
 
@@ -34,27 +34,19 @@ def criar_categoria():
         flash('❌ nome da categoria deve ter pelo menos 2 caracteres', 'erro')
         return redirect(url_for('categorias.listar_categorias'))
 
-    # valida se já existe
     if CategoriaModel.query.filter_by(nome=nome).first():
         flash(f'❌ categoria "{nome}" já existe', 'erro')
         return redirect(url_for('categorias.listar_categorias'))
 
-    # cria categoria nova
     categoria = CategoriaModel(nome=nome, cor=cor)
     db.session.add(categoria)
     db.session.commit()
-
     flash(f'✅ categoria "{nome}" criada com sucesso', 'sucesso')
     return redirect(url_for('categorias.listar_categorias'))
 
 
-# ═══════════════════════════════════════════════════════
-# ADICIONAR PALAVRA-CHAVE
-# ═══════════════════════════════════════════════════════
-
 @bp.route('/<int:categoria_id>/palavras', methods=['POST'])
 def adicionar_palavra(categoria_id):
-    """adiciona palavra-chave a uma categoria (rf06)"""
     if 'usuario_id' not in session:
         return redirect(url_for('dashboard.login'))
 
@@ -69,27 +61,19 @@ def adicionar_palavra(categoria_id):
         flash('❌ palavra deve ter pelo menos 2 caracteres', 'erro')
         return redirect(url_for('categorias.listar_categorias'))
 
-    # valida duplicata — salva sempre em minúsculo pra não ter problema no match
     if PalavraChaveModel.query.filter_by(palavra=palavra, categoria_id=categoria_id).first():
         flash(f'❌ palavra "{palavra}" já existe nesta categoria', 'erro')
         return redirect(url_for('categorias.listar_categorias'))
 
-    # adiciona palavra
     palavra_chave = PalavraChaveModel(palavra=palavra, categoria_id=categoria_id)
     db.session.add(palavra_chave)
     db.session.commit()
-
     flash(f'✅ palavra "{palavra}" adicionada à categoria "{categoria.nome}"', 'sucesso')
     return redirect(url_for('categorias.listar_categorias'))
 
 
-# ═══════════════════════════════════════════════════════
-# DELETAR PALAVRA-CHAVE
-# ═══════════════════════════════════════════════════════
-
 @bp.route('/palavras/<int:palavra_id>', methods=['POST'])
 def deletar_palavra(palavra_id):
-    """remove uma palavra-chave específica"""
     if 'usuario_id' not in session:
         return redirect(url_for('dashboard.login'))
 
@@ -100,21 +84,14 @@ def deletar_palavra(palavra_id):
 
     palavra_texto = palavra.palavra
     categoria_nome = palavra.categoria.nome
-
     db.session.delete(palavra)
     db.session.commit()
-
     flash(f'✅ palavra "{palavra_texto}" removida de "{categoria_nome}"', 'sucesso')
     return redirect(url_for('categorias.listar_categorias'))
 
 
-# ═══════════════════════════════════════════════════════
-# DELETAR CATEGORIA
-# ═══════════════════════════════════════════════════════
-
 @bp.route('/<int:categoria_id>', methods=['POST'])
 def deletar_categoria(categoria_id):
-    """deleta uma categoria (cascade apaga as palavras junto)"""
     if 'usuario_id' not in session:
         return redirect(url_for('dashboard.login'))
 
@@ -123,14 +100,38 @@ def deletar_categoria(categoria_id):
         flash('❌ categoria não encontrada', 'erro')
         return redirect(url_for('categorias.listar_categorias'))
 
-    # 'outros' é sagrada, não deixa deletar
     if categoria.nome == 'outros':
         flash('❌ não pode deletar a categoria "outros" (sagrada)', 'erro')
         return redirect(url_for('categorias.listar_categorias'))
 
     nome = categoria.nome
-    db.session.delete(categoria)  # cascade garante que as palavras somem junto
+    db.session.delete(categoria)
     db.session.commit()
-
     flash(f'✅ categoria "{nome}" deletada com sucesso', 'sucesso')
     return redirect(url_for('categorias.listar_categorias'))
+
+
+# ─────────────────────────────────────────────────────────
+# blueprint API — sem prefixo, rotas em /api/categorias
+# ─────────────────────────────────────────────────────────
+bp_api = Blueprint('api_categorias', __name__)
+
+
+@bp_api.route('/api/categorias', methods=['GET'])
+def api_listar_categorias():
+    usuario_id = request.headers.get('X-Usuario-ID')
+    if not usuario_id:
+        return jsonify({'erro': 'não autenticado'}), 401
+
+    categorias = CategoriaModel.query.all()
+    return jsonify({
+        'categorias': [
+            {
+                'id': c.id,
+                'nome': c.nome,
+                'cor': c.cor,
+                'palavras_chave': [p.palavra for p in c.palavras_chave],
+            }
+            for c in categorias
+        ]
+    })

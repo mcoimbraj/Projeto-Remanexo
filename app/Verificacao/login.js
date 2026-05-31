@@ -1,5 +1,4 @@
 //Realizar as funções de login, como autenticação e redirecionamento para a página principal após o login bem-sucedido. Deve se comunicar com o backend para verificar as credenciais do usuário e armazenar o token de autenticação para futuras requisições.
-
 import React, { useState } from 'react';
 import {
   View,
@@ -13,9 +12,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
-
-const API_URL = 'http://10.0.2.2:5000'; // emulador Android
-// const API_URL = 'http://192.168.18.11:5000'; // celular físico
+import { API_URL } from '../api'; 
 
 export default function Login() {
   const router = useRouter();
@@ -47,11 +44,8 @@ export default function Login() {
         return;
       }
 
-      // salva usuário no AsyncStorage
       await AsyncStorage.setItem('usuario', JSON.stringify(json.usuario));
-
-      // navega para as abas
-      router.replace('/(abas)/home');
+      router.replace('/abas/home');
     } catch (e) {
       setErro('Não foi possível conectar ao servidor.');
     } finally {

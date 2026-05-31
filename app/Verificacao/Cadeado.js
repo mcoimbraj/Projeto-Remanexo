@@ -12,7 +12,7 @@ export default function Cadeado() {
       const usuarioStr = await AsyncStorage.getItem('usuario');
 
       if (usuarioStr) {
-        router.replace('/(abas)/home'); // já logado → vai pra home
+        router.replace('/abas/home'); // já logado → vai pra home
       } else {
         router.replace('/verificacao/login'); // não logado → vai pro login
       }

@@ -13,7 +13,7 @@ import {
   Alert,
   Modal,
 } from 'react-native';
-import { apiFetch } from '../../App/api';
+import { apiFetch } from'../api';
 
 export default function Info() {
   const [abaSelecionada, setAbaSelecionada] = useState('transacoes'); // 'transacoes' ou 'metas'
@@ -42,12 +42,12 @@ export default function Info() {
   // BUSCAR DADOS
   // ═══════════════════════════════════════════════════
 
-  const buscarDados = useCallback(async () => {
+ const buscarDados = useCallback(async () => {
     try {
       setErro(null);
       const [resTransacoes, resMetas] = await Promise.all([
-        apiFetch('backend/routes/api/transacoes'),
-        apiFetch('backend/routes/api/metas'),
+        apiFetch('/api/transacoes'),
+        apiFetch('/api/metas'),
       ]);
       setTransacoes(resTransacoes.transacoes ?? []);
       setMetas(resMetas.metas ?? []);
@@ -58,15 +58,6 @@ export default function Info() {
       setAtualizando(false);
     }
   }, []);
-
-  useEffect(() => {
-    buscarDados();
-  }, []);
-
-  const aoAtualizar = () => {
-    setAtualizando(true);
-    buscarDados();
-  };
 
   // ═══════════════════════════════════════════════════
   // ADICIONAR TRANSAÇÃO
